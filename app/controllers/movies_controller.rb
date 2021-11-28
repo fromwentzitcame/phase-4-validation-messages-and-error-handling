@@ -1,5 +1,6 @@
 class MoviesController < ApplicationController
-  wrap_parameters false
+wrap_parameters false
+rescue_from ActiveRecord::RecordInvalid, with: :handle_error
   
   def index
     movies = Movie.all
@@ -15,6 +16,10 @@ class MoviesController < ApplicationController
 
   def movie_params
     params.permit(:title, :year, :length, :director, :description, :poster_url, :category, :discount, :female_director)
+  end
+
+  def handle_error(invalid)
+    render json: invalid.record.errors, status: :unprocessable_entity
   end
   
 end
